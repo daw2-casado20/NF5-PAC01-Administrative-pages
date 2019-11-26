@@ -2,146 +2,56 @@
 $db = mysqli_connect('localhost', 'adri', 'root') or 
     die ('Unable to connect. Check your connection parameters.');
 mysqli_select_db($db, 'mimusica') or die(mysqli_error($db));
-if ($_GET['action'] == 'edit') {
-    //retrieve the record's information 
-    $query = 'SELECT
-            music_nombre, musica_anio, musica_tipo, musica_cantante, music_productor
-        FROM
-            music
-        WHERE
-            music_id = ' . $_GET['id'];
-    $result = mysqli_query($db, $query) or die(mysqli_error($db));
-    extract(mysqli_fetch_assoc($result));
-} else {
-    //set values to blank
-    $music_nombre = '';
-    $musica_tipo = 0;
-    $musica_anio = date('Y');
-    $musica_cantante = 0;
-    $music_productor = 0;
-}
 ?>
 <html>
  <head>
-  <title><?php echo ucfirst($_GET['action']); ?> Musica</title>
+  <title>Music database</title>
+  <style type="text/css">
+   th { background-color: #999;}
+   .odd_row { background-color: #EEE; }
+   .even_row { background-color: #FFF; }
+  </style>
  </head>
  <body>
-  <form action="commit.php?action=<?php echo $_GET['action']; ?>&type=movie"
-   method="post">
-   <table>
-    <tr>
-     <td>Nombre musica</td>
-     <td><input type="text" name="music_nombre"
-      value="<?php echo $music_nombre; ?>"/></td>
-    </tr><tr>
-     <td>Tipo de musica</td>
-     <td><select name="musica_tipo">
+ <table style="width:100%;">
+  <tr>
+   <th colspan="2">Discos <a href="music.php?action=add">[ADD]</a></th>
+  </tr>
 <?php
-// select the movie type information
-$query = 'SELECT
-        musictipo_id, musictipo_label
-    FROM
-        tiposmusica
-    ORDER BY
-        musictipo_label';
-$result = mysqli_query($db, $query) or die(mysqli_error($db));
-// populate the select options with the results
+$query = 'SELECT * FROM music';
+$result = mysqli_query($db, $query) or die (mysqli_error($db));
+$odd = true;
 while ($row = mysqli_fetch_assoc($result)) {
-    foreach ($row as $value) {
-        if ($row['musictipo_id'] == $movie_type) {
-            echo '<option value="' . $row['musictipo_id'] .
-                '" selected="selected">';
-        } else {
-            echo '<option value="' . $row['musictipo_id'] . '">';
-        }
-        echo $row['musictipo_label'] . '</option>';
-    }
+    echo ($odd == true) ? '<tr class="odd_row">' : '<tr class="even_row">';
+    $odd = !$odd; 
+    echo '<td style="width:75%;">'; 
+    echo $row['music_nombre'];
+    echo '</td><td>';
+    echo ' <a href="music.php?action=edit&id=' . $row['music_id'] . '"> [EDIT]</a>'; 
+    echo ' <a href="delete.php?type=movie&id=' . $row['music_id'] . '"> [DELETE]</a>';
+    echo '</td></tr>';
 }
 ?>
-      </select></td>
-    </tr><tr>
-     <td>Musica año</td>
-     <td><select name="musica_anio">
+  <tr>
+    <th colspan="2">Personas <a href="people.php?action=add"> [ADD]</a></th>
+  </tr>
 <?php
-// populate the select options with years
-for ($yr = date("Y"); $yr >= 1970; $yr--) {
-    if ($yr == $musica_anio) {
-        echo '<option value="' . $yr . '" selected="selected">' . $yr .
-            '</option>';
-    } else {
-        echo '<option value="' . $yr . '">' . $yr . '</option>';
-    }
-}
-?>
-      </select></td>
-    </tr><tr>
-     <td>Cantante</td>
-     <td><select name="musica_cantante">
-<?php
-// select actor records
-$query = 'SELECT
-        persona_id, persona_nomComple
-    FROM
-        persona
-    WHERE
-        persona_pais = 1
-    ORDER BY
-        persona_nomComple';
-$result = mysqli_query($db, $query) or die(mysqli_error($db));
-// populate the select options with the results
+$query = 'SELECT * FROM persona';
+$result = mysqli_query($db, $query) or die (mysqli_error($db));
+$odd = true;
 while ($row = mysqli_fetch_assoc($result)) {
-    foreach ($row as $value) {
-        if ($row['persona_id'] == $musica_cantante) {
-            echo '<option value="' . $row['persona_id'] .
-                '" selected="selected">';
-        } else {
-            echo '<option value="' . $row['persona_id'] . '">';
-        }
-        echo $row['persona_nomComple'] . '</option>';
-    }
+    echo ($odd == true) ? '<tr class="odd_row">' : '<tr class="even_row">';
+    $odd = !$odd; 
+    echo '<td style="width: 25%;">'; 
+    echo $row['persona_nomComple'];
+    echo '</td><td>';
+    echo ' <a href="people.php?action=edit&id=' . $row['persona_id'] .
+        '"> [EDIT]</a>'; 
+    echo ' <a href="delete.php?type=people&id=' . $row['persona_id'] .
+        '"> [DELETE]</a>';
+    echo '</td></tr>';
 }
 ?>
-      </select></td>
-    </tr><tr>
-     <td>Director</td>
-     <td><select name="music_productor">
-<?php
-// select director records
-$query = 'SELECT
-        persona_id, persona_nomComple
-    FROM
-        persona
-    WHERE
-        persona_pais = 1
-    ORDER BY
-        persona_nomComple';
-$result = mysqli_query($db, $query) or die(mysqli_error($db));
-// populate the select options with the results
-while ($row = mysqli_fetch_assoc($result)) {
-    foreach ($row as $value) {
-        if ($row['persona_id'] == $movie_director) {
-            echo '<option value="' . $row['persona_id'] .
-                '" selected="selected">';
-        } else {
-            echo '<option value="' . $row['persona_id'] . '">';
-        }
-        echo $row['persona_nomComple'] . '</option>';
-    }
-}
-?>
-      </select></td>
-    </tr><tr>
-     <td colspan="2" style="text-align: center;">
-<?php
-if ($_GET['action'] == 'edit') {
-    echo '<input type="hidden" value="' . $_GET['id'] . '" name="music_id" />';
-}
-?>
-      <input type="submit" name="submit"
-       value="<?php echo ucfirst($_GET['action']); ?>" />
-     </td>
-    </tr>
-   </table>
-  </form>
+  </table>
  </body>
 </html>
