@@ -12,7 +12,7 @@ mysqli_select_db($db, 'mimusica') or die(mysqli_error($db));
 switch ($_GET['action']) {
 case 'add':
     switch ($_GET['type']) {
-    case 'music':
+    case 'movie':
         $query = 'INSERT INTO
             music
                 (music_nombre, musica_anio, musica_tipo, musica_cantante,
@@ -24,11 +24,20 @@ case 'add':
                  ' . $_POST['musica_cantante'] . ',
                  ' . $_POST['music_productor'] . ')';
         break;
+    case 'people':
+        $query = 'INSERT INTO
+            persona
+                (persona_nomComple, persona_productor, persona_pais)
+            VALUES
+                ("' . $_POST['persona_nomComple'] . '",
+                 ' . $_POST['persona_productor'] . ',
+                 ' . $_POST['persona_pais'] . ')';
+        break;
     }
     break;
 case 'edit':
     switch ($_GET['type']) {
-    case 'music':
+    case 'movie':
         $query = 'UPDATE music SET
                 music_nombre = "' . $_POST['music_nombre'] . '",
                 musica_anio = ' . $_POST['musica_anio'] . ',
@@ -38,7 +47,17 @@ case 'edit':
             WHERE
                 music_id = ' . $_POST['music_id'];
         break;
+    case 'people':
+    $query = 'UPDATE persona SET
+            persona_nomComple = "' . $_POST['persona_nomComple'] . '",
+            persona_productor = ' . $_POST['persona_productor'] . ',
+            persona_pais = ' . $_POST['persona_pais'] . '
+        WHERE
+            persona_id = ' . $_POST['persona_id'];
+        break;  
     }
+    
+
     break;
 }
 if (isset($query)) {
