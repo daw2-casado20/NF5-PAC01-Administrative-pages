@@ -74,63 +74,19 @@ for ($yr = date("Y"); $yr >= 1970; $yr--) {
 }
 ?>
       </select></td>
-    </tr><tr>
+    </tr>
+    <tr>
      <td>Cantante</td>
-     <td><select name="musica_cantante">
-<?php
-// select actor records
-$query = 'SELECT
-        persona_id, persona_nomComple
-    FROM
-        persona
-    WHERE
-        persona_pais = 1
-    ORDER BY
-        persona_nomComple';
-$result = mysqli_query($db, $query) or die(mysqli_error($db));
-// populate the select options with the results
-while ($row = mysqli_fetch_assoc($result)) {
-    foreach ($row as $value) {
-        if ($row['persona_id'] == $musica_cantante) {
-            echo '<option value="' . $row['persona_id'] .
-                '" selected="selected">';
-        } else {
-            echo '<option value="' . $row['persona_id'] . '">';
-        }
-        echo $row['persona_nomComple'] . '</option>';
-    }
-}
-?>
-      </select></td>
-    </tr><tr>
+     <td><input type="text" name="musica_cantante"
+      value="<?php echo $musica_cantante; ?>"/></td>
+    </tr>
+    <tr>
      <td>Director</td>
-     <td><select name="music_productor">
-<?php
-// select director records
-$query = 'SELECT
-        persona_id, persona_nomComple
-    FROM
-        persona
-    WHERE
-        persona_pais = 1
-    ORDER BY
-        persona_nomComple';
-$result = mysqli_query($db, $query) or die(mysqli_error($db));
-// populate the select options with the results
-while ($row = mysqli_fetch_assoc($result)) {
-    foreach ($row as $value) {
-        if ($row['persona_id'] == $movie_director) {
-            echo '<option value="' . $row['persona_id'] .
-                '" selected="selected">';
-        } else {
-            echo '<option value="' . $row['persona_id'] . '">';
-        }
-        echo $row['persona_nomComple'] . '</option>';
-    }
-}
-?>
-      </select></td>
-    </tr><tr>
+     <td><input type="text" name="music_productor"
+      value="<?php echo $music_productor; ?>"/></td>
+    </tr>
+
+    <tr>
      <td colspan="2" style="text-align: center;">
 <?php
 if ($_GET['action'] == 'edit') {
