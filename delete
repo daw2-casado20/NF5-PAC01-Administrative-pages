@@ -2,12 +2,13 @@
 $db = mysqli_connect('localhost', 'adri', 'root') or 
     die ('Unable to connect. Check your connection parameters.');
 mysqli_select_db($db, 'mimusica') or die(mysqli_error($db));
+
 if (!isset($_GET['do']) || $_GET['do'] != 1) {
     switch ($_GET['type']) {
-    case 'music':
-        echo 'Are you sure you want to delete this movie?<br/>';
+    case 'movie':
+        echo 'Are you sure you want to delete this musica?<br/>';
         break;
-    case 'persona':
+    case 'people':
         echo 'Are you sure you want to delete this person?<br/>';
         break;
     } 
@@ -15,31 +16,24 @@ if (!isset($_GET['do']) || $_GET['do'] != 1) {
     echo 'or <a href="admin.php">no</a>';
 } else {
     switch ($_GET['type']) {
-    case 'persona':
-        $query = 'UPDATE music SET
-                musica_cantante = 0 
-            WHERE
-                musica_cantante = ' . $_GET['id'];
-        $result = mysqli_query($db, $query) or die(mysqli_error($db));
-        $query = 'DELETE FROM people 
-            WHERE
-                persona_id = ' . $_GET['id'];
+    case 'movie':
+
+        $query = 'DELETE FROM music  WHERE music_id= ' . $_GET['id'];
         $result = mysqli_query($db, $query) or die(mysqli_error($db));
 ?>
 <p style="text-align: center;">Your person has been deleted.
-<a href="movie_index.php">Return to Index</a></p>
+<a href="admin.php">Return to Index</a></p>
 <?php
         break;
-    case 'music':
-        $query = 'DELETE FROM music 
-            WHERE
-                music_id = ' . $_GET['id'];
+    case 'people':
+         $query = 'DELETE FROM persona  WHERE persona_id = ' . $_GET['id'];
         $result = mysqli_query($db, $query) or die(mysqli_error($db));
 ?>
-<p style="text-align: center;">Your movie has been deleted.
-<a href="movie_index.php">Return to Index</a></p>
+<p style="text-align: center;">Your song has been deleted.
+<a href="admin.php">Return to Index</a></p>
 <?php
         break;
     }
 }
 ?>
+
